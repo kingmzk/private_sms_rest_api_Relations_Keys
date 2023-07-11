@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'modtest',
-    'rest_framework'
+    'rest_framework',
+    'pandas',
+
+ 
 ]
 
 MIDDLEWARE = [
@@ -85,31 +88,31 @@ WSGI_APPLICATION = 'modeltest.wsgi.application'
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'pydjango',
-#         'USER': 'root',
-#         'PASSWORD': 'zakria@1999',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
-
-
-
 DATABASES = {
     'default': {
-        "ENGINE": "mssql",
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pydjango',
-        'HOST': 'ZAKRIA\SQLEXPRESS',
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'Trusted_Connection': 'Yes',
-        },
+        'USER': 'root',
+        'PASSWORD': 'zakria@1999',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
+
+
+
+
+# DATABASES = {
+#     'default': {
+#         "ENGINE": "mssql",
+#         'NAME': 'pydjango',
+#         'HOST': 'ZAKRIA\SQLEXPRESS',
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'Trusted_Connection': 'Yes',
+#         },
+#     }
+# }
 
 # settings.
 

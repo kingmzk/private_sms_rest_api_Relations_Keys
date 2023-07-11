@@ -30,6 +30,7 @@ from modtest.views import (
 )
 
 
+
 router = DefaultRouter()
 router.register('accelerators', AcceleratorViewSet, basename='accelerator')
 router.register('optytrackers', OptyTrackerViewSet, basename='optytracker')
@@ -45,5 +46,6 @@ urlpatterns = [
     path('accelerators/<int:pk>/update/', AcceleratorViewSet.as_view({'put': 'update'}), name='accelerator-update'),
     path('get_opportunity/<int:pk>/', get_opportunity, name='get_opportunity'),
     path('api/optytracker/', OptyTrackerAPIView.as_view()),
+
  
 ]
