@@ -106,19 +106,38 @@ from rest_framework.views import APIView
 
 
 
+
+# @api_view(['GET'])
+# def get_opportunity(request, pk=None):
+#     if pk is not None:
+#         try:
+#             opt = OptyTracker.objects.get(pk=pk)
+#             serializer = OptyTrackerSerializer(opt)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         except OptyTracker.DoesNotExist:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
+#     else:
+#         queryset = OptyTracker.objects.all()
+#         serializer = OptyTrackerSerializer(queryset, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+from django.shortcuts import get_object_or_404
+
 @api_view(['GET'])
 def get_opportunity(request, pk=None):
     if pk is not None:
-        try:
-            opt = OptyTracker.objects.get(pk=pk)
-            serializer = OptyTrackerSerializer(opt)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except OptyTracker.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-    else:
-        queryset = OptyTracker.objects.all()
-        serializer = OptyTrackerSerializer(queryset, many=True)
+        opt = get_object_or_404(OptyTracker, pk=pk)
+        serializer = OptyTrackerSerializer(opt)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        queryset = OptyTracker.objects.all().only('op_id', 'op_name', 'client_name')
+        serializer = OptyTrackerSerializer(queryset, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 
 
@@ -222,3 +241,67 @@ class MicroserviceViewSet(viewsets.ModelViewSet):
 class OppMicroserviceViewSet(viewsets.ModelViewSet):
     queryset = OppMicroservice.objects.all()
     serializer_class = OppMicroserviceSerializer
+
+
+
+
+
+
+
+
+
+
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from io import BytesIO
+from reportlab.lib.pagesizes import A4
+import requests
+
+def generate_pdf(request, pk):
+    try:
+        # Construct the URL with the ID
+        url = f'http://localhost:8000/get_opportunity/{pk}/'
+
+        # Fetch the data from the endpoint
+        response = requests.get(url)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            data = response.json()
+
+            # Load the template
+            template = get_template('pdf_template.html')
+
+            # Render the template with the data
+            rendered_template = template.render(data)
+
+            # Create a BytesIO buffer for the PDF
+            pdf_buffer = BytesIO()
+
+            # Convert HTML to PDF with A4 page size
+            pisa_status = pisa.CreatePDF(
+                rendered_template,
+                dest=pdf_buffer,
+                pagesize=A4
+            )
+
+            # Check if PDF creation was successful
+            if pisa_status.err:
+                return HttpResponse("Failed to generate PDF")
+
+            # Set the PDF file headers
+            pdf = HttpResponse(
+                pdf_buffer.getvalue(),
+                content_type='application/pdf'
+            )
+            pdf['Content-Disposition'] = 'attachment; filename="output.pdf"'
+
+            return pdf
+
+        else:
+            return HttpResponse("Failed to fetch data from the endpoint")
+
+    except Exception as e:
+        return HttpResponse(f"An error occurred: {str(e)}")

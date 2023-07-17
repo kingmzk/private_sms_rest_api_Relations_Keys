@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from modtest.views import (
@@ -26,8 +27,10 @@ from modtest.views import (
     MicroserviceViewSet,
     OppMicroserviceViewSet,
     get_opportunity,
-    OptyTrackerAPIView
+    OptyTrackerAPIView,
+    generate_pdf
 )
+from django.urls import reverse_lazy
 
 
 
@@ -46,6 +49,7 @@ urlpatterns = [
     path('accelerators/<int:pk>/update/', AcceleratorViewSet.as_view({'put': 'update'}), name='accelerator-update'),
     path('get_opportunity/<int:pk>/', get_opportunity, name='get_opportunity'),
     path('api/optytracker/', OptyTrackerAPIView.as_view()),
-
+    path('generate-pdf/<int:pk>/', generate_pdf, name='generate_pdf'),
+    path('pdf-link/', lambda request: HttpResponse(f'<a href="{reverse_lazy("generate_pdf")}">Generate PDF</a>'), name='pdf_link'),
  
 ]

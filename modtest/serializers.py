@@ -13,28 +13,21 @@ class OptyTrackerSerializer(serializers.ModelSerializer):
     accelerators = serializers.SerializerMethodField()
     competations = serializers.SerializerMethodField()
     microservices = serializers.SerializerMethodField()
+ 
 
     class Meta:
         model = OptyTracker        
         fields = ['op_id', 'op_name', 'client_name', 'accelerators', 'competations', 'microservices']
+        read_only_fields = ['op_id', 'op_name', 'client_name']
 
     def get_accelerators(self, obj):
-        mylist = []
-        for accelerator in obj.accelerators.all():
-            mylist.append(accelerator.acc_name)
-        return ", ".join(mylist)
-    
+        return list(obj.accelerators.values_list('acc_name', flat=True))
+
     def get_competations(self, obj):
-        mylist = []
-        for competation in obj.Competations.all():
-            mylist.append(competation.name)
-        return ", ".join(mylist)
+        return list(obj.Competations.values_list('name', flat=True))
 
     def get_microservices(self, obj):
-        mylist = []
-        for microservice in obj.Microservices.all():
-            mylist.append(microservice.name)
-        return ", ".join(mylist)
+        return list(obj.Microservices.values_list('name', flat=True))
 
     
 
