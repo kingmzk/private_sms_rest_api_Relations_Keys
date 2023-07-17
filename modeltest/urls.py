@@ -28,9 +28,12 @@ from modtest.views import (
     OppMicroserviceViewSet,
     get_opportunity,
     OptyTrackerAPIView,
-    generate_pdf
+    generate_pdf,
+    OpportunityTrackerUpdate,
+    OpportunityTrackerDelete,
 )
 from django.urls import reverse_lazy
+from django.urls import path
 
 
 
@@ -51,5 +54,9 @@ urlpatterns = [
     path('api/optytracker/', OptyTrackerAPIView.as_view()),
     path('generate-pdf/<int:pk>/', generate_pdf, name='generate_pdf'),
     path('pdf-link/', lambda request: HttpResponse(f'<a href="{reverse_lazy("generate_pdf")}">Generate PDF</a>'), name='pdf_link'),
+    path('opportunity/<int:pk>/', OpportunityTrackerUpdate.as_view(), name='opportunity-update'),
+    path('opportunity/<int:pk>/', OpportunityTrackerUpdate.as_view(), name='opportunity-update'),
+    path('opportunity/<int:pk>/', OpportunityTrackerDelete.as_view(), name='opportunity-delete'),
+
  
 ]

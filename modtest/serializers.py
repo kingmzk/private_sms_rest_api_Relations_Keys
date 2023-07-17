@@ -13,10 +13,9 @@ class OptyTrackerSerializer(serializers.ModelSerializer):
     accelerators = serializers.SerializerMethodField()
     competations = serializers.SerializerMethodField()
     microservices = serializers.SerializerMethodField()
- 
 
     class Meta:
-        model = OptyTracker        
+        model = OptyTracker
         fields = ['op_id', 'op_name', 'client_name', 'accelerators', 'competations', 'microservices']
         read_only_fields = ['op_id', 'op_name', 'client_name']
 
@@ -28,6 +27,25 @@ class OptyTrackerSerializer(serializers.ModelSerializer):
 
     def get_microservices(self, obj):
         return list(obj.Microservices.values_list('name', flat=True))
+
+    def validate_op_id(self, value):
+        if value < 0:
+            raise serializers.ValidationError("op_id must be a positive integer")
+        return value
+
+    def validate(self, data):
+        accelerators_data = data.get('accelerators')
+        competations_data = data.get('competations')
+        microservices_data = data.get('microservices')
+
+        if not accelerators_data:
+            raise serializers.ValidationError("At least one accelerator must be provided")
+        if not competations_data:
+            raise serializers.ValidationError("At least one competation must be provided")
+        if not microservices_data:
+            raise serializers.ValidationError("At least one microservice must be provided")
+
+        return data
 
     
 

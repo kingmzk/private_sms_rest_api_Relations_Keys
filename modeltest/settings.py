@@ -103,17 +103,17 @@ DATABASES = {
 
 
 
-# DATABASES = {
-#     'default': {
-#         "ENGINE": "mssql",
-#         'NAME': 'pydjango',
-#         'HOST': 'ZAKRIA\SQLEXPRESS',
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#             'Trusted_Connection': 'Yes',
-#         },
-#     }
-# }
+DATABASES = {
+    'default': {
+        "ENGINE": "mssql",
+        'NAME': 'pydjango',
+        'HOST': 'ZAKRIA\SQLEXPRESS',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'Trusted_Connection': 'Yes',
+        },
+    }
+}
 
 # settings.
 
