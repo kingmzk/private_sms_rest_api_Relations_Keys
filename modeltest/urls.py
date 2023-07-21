@@ -31,6 +31,8 @@ from modtest.views import (
     generate_pdf,
     OpportunityTrackerUpdate,
     OpportunityTrackerDelete,
+    OptyTrackerAPIView,
+    OptyTrackerAPIViewPost
 )
 from django.urls import reverse_lazy
 from django.urls import path
@@ -51,12 +53,14 @@ urlpatterns = [
     path('', include(router.urls)),
     path('accelerators/<int:pk>/update/', AcceleratorViewSet.as_view({'put': 'update'}), name='accelerator-update'),
     path('get_opportunity/<int:pk>/', get_opportunity, name='get_opportunity'),
-    path('api/optytracker/', OptyTrackerAPIView.as_view()),
+  
     path('generate-pdf/<int:pk>/', generate_pdf, name='generate_pdf'),
     path('pdf-link/', lambda request: HttpResponse(f'<a href="{reverse_lazy("generate_pdf")}">Generate PDF</a>'), name='pdf_link'),
-    path('opportunity/<int:pk>/', OpportunityTrackerUpdate.as_view(), name='opportunity-update'),
-    path('opportunity/<int:pk>/', OpportunityTrackerUpdate.as_view(), name='opportunity-update'),
-    path('opportunity/<int:pk>/', OpportunityTrackerDelete.as_view(), name='opportunity-delete'),
+    path('opportunity/api/<int:pk>/', OpportunityTrackerUpdate.as_view(), name='opportunity-update'),
+    path('opportunity/<int:pk>/', OptyTrackerAPIView.as_view(), name='opportunity-update'),
+    path('opportunity/delete/<int:pk>/', OpportunityTrackerDelete.as_view(), name='opportunity-delete'),
+    path('opportunity/create/', OptyTrackerAPIViewPost.as_view(), name='opportunity-create'),
+    path('api/optytracker/<int:pk>/', OptyTrackerAPIView.as_view(), name='optytracker-detail'),
 
  
 ]
