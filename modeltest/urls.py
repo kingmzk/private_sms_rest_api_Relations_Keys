@@ -32,7 +32,8 @@ from modtest.views import (
     OpportunityTrackerUpdate,
     OpportunityTrackerDelete,
     OptyTrackerAPIView,
-    OptyTrackerAPIViewPost
+    OptyTrackerAPIViewPost,
+    hello
 )
 from django.urls import reverse_lazy
 from django.urls import path
@@ -61,6 +62,6 @@ urlpatterns = [
     path('opportunity/delete/<int:pk>/', OpportunityTrackerDelete.as_view(), name='opportunity-delete'),
     path('opportunity/create/', OptyTrackerAPIViewPost.as_view(), name='opportunity-create'),
     path('api/optytracker/<int:pk>/', OptyTrackerAPIView.as_view(), name='optytracker-detail'),
-
+    path('sample/',hello,name="hello")
  
 ]

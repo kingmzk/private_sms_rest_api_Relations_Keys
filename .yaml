@@ -1,0 +1,38 @@
+# Python application build and artifact pipeline
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+  displayName: 'Install dependencies'
+
+- script: |
+    # Perform any other build-related steps here if necessary
+    # For example, you can create directories, compile assets, etc.
+    echo "Building the Python application..."
+  displayName: 'Build'
+
+- script: |
+    python manage.py test
+  displayName: 'Run tests'
+
+# Publish the Python application artifact
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)'
+    artifact: 'MyPythonApp'
+  displayName: 'Publish Artifact'

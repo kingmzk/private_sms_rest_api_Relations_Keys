@@ -1123,3 +1123,11 @@ class OpportunityTrackerDelete(APIView):
 
         except Exception as e:
             return Response({'message': 'An error occurred while processing the request.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+from django.http import JsonResponse
+
+def hello(request):
+    return JsonResponse({"message" : "Hello world this message is not connected to any database"})
