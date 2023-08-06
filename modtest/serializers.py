@@ -83,3 +83,57 @@ class OppMicroserviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = OppMicroservice
         fields = '__all__'
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        '''
+        DECLARE @optytracker_id INT = 1;
+
+-- Get the ID of the OptyTracker instance
+SELECT @optytracker_id = id FROM dbo.modtest_optytracker WHERE op_id = @optytracker_id;
+
+-- Clear existing many-to-many relations for Competations
+DELETE FROM dbo.modtest_oppcompetation WHERE opty_id_id = @optytracker_id;
+
+-- Insert new Competation relations
+INSERT INTO dbo.modtest_oppcompetation (opty_id_id, comp_id_id)
+SELECT @optytracker_id, id
+FROM dbo.modtest_competation
+WHERE name IN ('infosys', 'MY Company');
+
+
+
+
+
+
+
+
+
+
+-- Insert new Competation relations
+INSERT INTO dbo.modtest_competation (name)
+SELECT DISTINCT name
+FROM (VALUES ('Infosys'), ('MY Company')) AS new_comps (name)
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dbo.modtest_competation c
+    WHERE LOWER(c.name) = LOWER(new_comps.name)
+);
+
+-- Insert relations into modtest_oppcompetation
+INSERT INTO dbo.modtest_oppcompetation (opty_id_id, comp_id_id)
+SELECT @optytracker_id, c.id
+FROM dbo.modtest_competation c
+WHERE LOWER(c.name) IN ('infosys', 'my company');
+
+
+        '''

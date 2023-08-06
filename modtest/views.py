@@ -499,11 +499,44 @@ def get_opportunity(request, pk=None):
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+from django.core.mail import EmailMessage
+from rest_framework import status
+from rest_framework.response import Response
+from django.template.loader import render_to_string 
+
+# def send_email_notification(self,subject, from_email, to_email, email_text):
+#     try:
+#         msg = EmailMessage(subject, email_text, from_email, to_email)
+#         msg.send()
+#     except Exception as e:
+#         # Handle exception if there's an error sending the email
+#         # For example, you can log the error or return an error response
+#         return Response({'error': 'Failed to send email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+
+
+
 
 from django.db import transaction
 from django.core.exceptions import MultipleObjectsReturned
+from django.core.mail import EmailMultiAlternatives
 
 class OptyTrackerAPIViewPost(APIView):
+    
+    
+    def send_email_notification(self, subject, from_email, to_email, email_html):
+        try:
+            msg = EmailMultiAlternatives(subject, email_html, from_email, to_email)  
+            msg.attach_alternative(email_html, "text/html")  # Attach HTML content         
+            msg.send()
+        except Exception as e:
+            print(f"Email sending error: {e}")
+            return Response({'error': 'Failed to send email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     def post(self, request):
         data = request.data
 
@@ -576,7 +609,29 @@ class OptyTrackerAPIViewPost(APIView):
             opty_tracker.Microservices.set(microservices)
 
             serializer = OptyTrackerSerializer(opty_tracker)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+          
+            # Call the new method to send the email
+            subject = 'New OptyTracker Instance Created'
+            from_email = 'mohammedzakriakhanz@gmail.com'
+            to_email = ['mohammedzakriakhanz@gmail.com', 'mohammedzakriakhan@gmail.com']
+
+            context = {
+            'competations_list': competations_list,
+            'accelerators_list': accelerators_list,
+            'microservices_list': microservices_list,
+            'opty_tracker': opty_tracker,
+        }
+            # Render the email template
+            email_html = render_to_string('email_template.html', context)
+            email_text = render_to_string('email_template.txt', context)
+
+            self.send_email_notification(subject, from_email, to_email, email_html)
+
+            serializer = OptyTrackerSerializer(opty_tracker)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'message': 'Success'}, status=status.HTTP_201_CREATED)
 
 
 
@@ -676,6 +731,45 @@ class OptyTrackerAPIView(APIView):
 
         except Exception as e:
             return Response({'message': 'An error occurred while processing the request.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+# -- Get the existing OptyTracker instance
+# SELECT * FROM OptyTracker WHERE id = @pk;
+
+# -- Create or retrieve Accelerator objects
+# -- (You'll need to use INSERT and MERGE or similar techniques)
+# INSERT INTO Accelerator (acc_name) VALUES ('accelerator_name_1'), ('accelerator_name_2'), ...;
+
+# -- Create or retrieve Competation objects
+# INSERT INTO Competation (name) VALUES ('competation_name_1'), ('competation_name_2'), ...;
+
+# -- Create or retrieve Microservice objects
+# INSERT INTO Microservice (name) VALUES ('microservice_name_1'), ('microservice_name_2'), ...;
+
+# -- Update the OptyTracker instance with provided data
+# UPDATE OptyTracker
+# SET field1 = value1, field2 = value2, ...
+# WHERE id = @pk;
+
+# -- Set the many-to-many relations (using intermediate tables)
+# -- First, clear the existing relations
+# DELETE FROM OptyTracker_Accelerators WHERE optytracker_id = @pk;
+# DELETE FROM OptyTracker_Competations WHERE optytracker_id = @pk;
+# DELETE FROM OptyTracker_Microservices WHERE optytracker_id = @pk;
+
+# -- Then, insert new relations
+# INSERT INTO OptyTracker_Accelerators (optytracker_id, accelerator_id) VALUES (@pk, accelerator_id_1), (@pk, accelerator_id_2), ...;
+# INSERT INTO OptyTracker_Competations (optytracker_id, competation_id) VALUES (@pk, competation_id_1), (@pk, competation_id_2), ...;
+# INSERT INTO OptyTracker_Microservices (optytracker_id, microservice_id) VALUES (@pk, microservice_id_1), (@pk, microservice_id_2), ...;
+
+# -- Finally, select the updated OptyTracker instance
+# SELECT * FROM OptyTracker WHERE id = @pk;
+
+
+
+
 
 
 
